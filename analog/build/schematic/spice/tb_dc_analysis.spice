@@ -1,6 +1,6 @@
 ** sch_path: /workspace/analog/schematics/tb_dc_analysis.sch
 **.subckt tb_dc_analysis
-x1 net6 net1 net3 net4 bootcamp_opamp
+x1 out net1 net3 net4 bootcamp_opamp
 VDD VDD GND 1.8
 VCM net5 GND 0.9
 VB net4 GND 0.7
@@ -12,11 +12,11 @@ R2 net5 net2 1e6 m=1
 .control
 save all
 dc VDIFF -50m 50m 0.1m
-plot v(net6) vs v(net3)-v(net1) title 'VTC'
-meas dc vout_at_zero find v(net6) at=0
-let gain = deriv(v(net6))
-plot gain title 'Gain'
-print maximum(gain)
+let absgain = abs(deriv(v(out)))
+print maximum(absgain)
+print 20*log10(maximum(absgain))
+meas dc offset find v-sweep when v(out)=0.9
+plot v(out) title 'VTC'
 .endc
 
 
@@ -32,8 +32,28 @@ print maximum(gain)
 
 * expanding   symbol:  bootcamp_opamp.sym # of pins=4
 ** sym_path: /workspace/analog/symbols/bootcamp_opamp.sym
-** sch_path: /workspace/analog/symbols/bootcamp_opamp.sch
+** sch_path: /workspace/analog/schematics/bootcamp_opamp.sch
 .subckt bootcamp_opamp Vout Vin- Vin+ Vbias
+*.ipin Vin+
+*.ipin Vbias
+*.ipin Vin-
+*.opin Vout
+XM1 net2 Vin+ net1 GND sky130_fd_pr__nfet_01v8 L=1 W=15 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM3 net2 net2 VDD VDD sky130_fd_pr__pfet_01v8 L=1 W=30 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM4 net3 net2 VDD VDD sky130_fd_pr__pfet_01v8 L=1 W=30 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM5 net1 Vbias GND GND sky130_fd_pr__nfet_01v8 L=2 W=25 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM2 net3 Vin- net1 GND sky130_fd_pr__nfet_01v8 L=1 W=15 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XC1 net4 Vout sky130_fd_pr__cap_mim_m3_1 W=50 L=10 MF=1 m=1
+R1 net3 net4 sky130_fd_pr__res_generic_po W=10 L=1 m=1
+XM7 Vout Vbias GND GND sky130_fd_pr__nfet_01v8 L=2 W=50 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
+XM6 Vout net3 VDD VDD sky130_fd_pr__pfet_01v8 L=1 W=60 nf=1 ad='int((nf+1)/2) * W/nf * 0.29' as='int((nf+2)/2) * W/nf * 0.29' pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' nrd='0.29 / W' nrs='0.29 / W' sa=0 sb=0 sd=0 mult=1 m=1
 .ends
 
 .GLOBAL GND
