@@ -1,0 +1,41 @@
+** sch_path: /workspace/analog/schematics/tb_dc_analysis.sch
+**.subckt tb_dc_analysis
+x1 net6 net1 net3 net4 bootcamp_opamp
+VDD VDD GND 1.8
+VCM net5 GND 0.9
+VB net4 GND 0.7
+VDIFF net3 net2 0
+R1 net5 net1 1e6 m=1
+R2 net5 net2 1e6 m=1
+**** begin user architecture code
+
+.control
+save all
+dc VDIFF -50m 50m 0.1m
+plot v(net6) vs v(net3)-v(net1) title 'VTC'
+meas dc vout_at_zero find v(net6) at=0
+let gain = deriv(v(net6))
+plot gain title 'Gain'
+print maximum(gain)
+.endc
+
+
+.param mc_mm_switch=0
+.param mc_pr_switch=0
+.include /root/.volare/sky130A/libs.tech/ngspice/corners/tt.spice
+.include /root/.volare/sky130A/libs.tech/ngspice/r+c/res_typical__cap_typical.spice
+.include /root/.volare/sky130A/libs.tech/ngspice/r+c/res_typical__cap_typical__lin.spice
+.include /root/.volare/sky130A/libs.tech/ngspice/corners/tt/specialized_cells.spice
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  bootcamp_opamp.sym # of pins=4
+** sym_path: /workspace/analog/symbols/bootcamp_opamp.sym
+** sch_path: /workspace/analog/symbols/bootcamp_opamp.sch
+.subckt bootcamp_opamp Vout Vin- Vin+ Vbias
+.ends
+
+.GLOBAL GND
+.GLOBAL VDD
+.end
