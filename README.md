@@ -1,6 +1,18 @@
-# UWASIC Design Template
+# UWASIC Analog Onboarding
 
-A template for mixed-signal ASIC design using open-source tools, featuring automated workflows for digital, analog, and integration for TinyTapeout chip projects.
+## 2-Stage Op-Amp Performance Summary
+=====================================
+DC Gain:              82.1359 dB  (Target: ≥20 dB)
+Input Offset:         0.6353087 mV  (Target: ≤5 mV)  
+CMRR:                 64.1934 dB  (Target: ≥40 dB)
+Input Impedance:      5.793134e6 MΩ  (Target: ≥1 MΩ)
+Output Impedance:     0.01800298 kΩ  (Target: ≤1 kΩ)
+Power Consumption:    0.2194589 mW  (Target: ≤5 mW)
+3dB Bandwidth:        0.00369663 MHz
+
+GBW Product:          9.23232 MHz
+
+PASS/FAIL: PASS
 
 ## Documentation
 

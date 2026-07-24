@@ -12,6 +12,7 @@ N -300 -20 -300 10 {lab=#net5}
 N -300 -20 -280 -20 {lab=#net5}
 N -300 10 -300 40 {lab=#net5}
 N -300 40 -280 40 {lab=#net5}
+N 240 -0 250 30 {lab=out}
 C {bootcamp_opamp.sym} 60 0 0 0 {name=x1}
 C {devices/vsource.sym} -120 -140 0 0 {name=VDD value=1.8 savecurrent=false}
 C {devices/vsource.sym} -330 10 1 1 {name=VCM value=0.9 savecurrent=false}
@@ -30,14 +31,17 @@ footprint=1206
 device=resistor
 m=1}
 C {devices/vdd.sym} -120 -170 0 0 {name=l3 lab=VDD}
-C {devices/code_shown.sym} 140 -290 0 0 {name=s1 only_toplevel=false value=".control
+C {devices/code_shown.sym} 100 -340 0 0 {name=s1 only_toplevel=false value=".control
 save all
-dc VDIFF -50m 50m 0.1m
-plot v(net6) vs v(net3)-v(net1) title 'VTC'
-meas dc vout_at_zero find v(net6) at=0
-let gain = deriv(v(net6))
-plot gain title 'Gain'
-print maximum(gain)
+dc VDIFF -50m 50m 0.01m
+let absgain = abs(deriv(v(out)))
+print maximum(absgain)
+print db(maximum(absgain))
+meas dc offset find v-sweep when v(out)=0.9
+let power_mW = -vdd#branch * 1.8
+print (maximum(power_mW)*1000)
+plot v(out) title 'VTC'
 .endc"}
-C {sky130_fd_pr/corner.sym} 300 -110 0 0 {name=CORNER only_toplevel=false corner=tt}
+C {sky130_fd_pr/corner.sym} 350 -70 0 0 {name=CORNER only_toplevel=false corner=tt}
 C {devices/gnd.sym} -360 10 1 0 {name=l4 lab=GND}
+C {devices/lab_pin.sym} 250 30 0 1 {name=p1 sig_type=std_logic lab=out}
